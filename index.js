@@ -1,24 +1,33 @@
-var request = require('request');
-request('https://news.ycombinator.com/', function (error, response, body) {
-  const cheerio = require('cheerio');
-  const $ = cheerio.load(body);
+const request = require('request');
+const cheerio = require('cheerio');
 
+const req = (url) => {
+  return new Promise ((resolve, reject) => {
+    request(url, (err, resp, body) => {
+      if (err) {
+        reject(err);
+        return;
+      }
 
-      // console.log($('.commtext.c00').map((p) => p.children[0].data).join('\n'));
-
-
-  for (i = 0; i < 5; i++) {
-  console.log($('.storylink')[i].children[0].data);
-  var req = require('request');
-    req('https://news.ycombinator.com/item?id=' + $('tr .athing')[i].attribs.id, function (error, response, body) {
-      const $ = cheerio.load(body);
-      console.log('error:', error); // Print the error if one occurred
-      console.log($('.commtext.c00').slice(0,1).text());
+      resolve(body);
+    });
   });
 }
-});
 
-// const cheerio = require('cheerio');
-// const $ = cheerio.load(body);
-// // console.log($.html());
-// //console.log(body.events());
+async function main () {
+  try {
+    const body = await req('https://news.ycombinator.com/');
+    const $ = cheerio.load(body);
+    for (i = 0; i < 6; i++) {
+      console.log($('.storylink')[i].children[0].data);
+      var requ = require('request');
+      const body1 = await req('https://news.ycombinator.com/item?id=' + $('tr .athing')[i].attribs.id);
+      const $1 = cheerio.load(body1);
+      console.log($1('.commtext.c00').slice(0,1).text());
+    }
+  } catch(error) {
+    console.log(error);
+  }
+
+}
+main();
