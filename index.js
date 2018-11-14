@@ -31,3 +31,7 @@ async function main () {
 
 }
 main();
+
+// var request = request.defaults({jar: true});
+//
+// request.post('https://profil.wp.pl/login.html', {form:{login_username:'oliwia_bar', password:''}})
